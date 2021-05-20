@@ -27,7 +27,7 @@ func main() {
 
 	flag.StringVar(&root, "root", os.Getenv("CODEPATH"), "The $GOPATH-style root directory.")
 	flag.StringVar(&org, "org", "", "The github org.")
-	flag.StringVar(&team, "root", "", "The team within the github org.")
+	flag.StringVar(&team, "team", "", "The team within the github org.")
 	flag.Parse()
 
 	_, err := os.Stat(root)
