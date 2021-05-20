@@ -100,14 +100,6 @@ func worker(id int, root string, input chan string, waiter *sync.WaitGroup, dryR
 			if err != nil {
 				log.Printf("[WARN] worker %d: clone err for %s: %s", id, name, err)
 			}
-
-			command = exec.Command("git", "config", "--add", "review.branch", "main")
-			command.Dir = target
-			command.Stderr = command.Stdout
-			err = command.Run()
-			if err != nil {
-				log.Printf("[WARN] worker %d: git config err for %s: %s", id, name, err)
-			}
 		}
 	}
 }
