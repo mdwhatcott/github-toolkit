@@ -15,10 +15,16 @@ import (
 	"golang.org/x/oauth2"
 )
 
+var Version = "dev"
+
 func main() {
 	var root string
 
 	flag.StringVar(&root, "root", os.Getenv("CODEPATH"), "The $GOPATH-style root directory.")
+	flag.Usage = func() {
+		flag.PrintDefaults()
+		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "Version: %s", Version)
+	}
 	flag.Parse()
 
 	_, err := os.Stat(root)

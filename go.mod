@@ -1,4 +1,4 @@
-module github-toolkit
+module github.com/mdwhatcott/github-toolkit
 
 go 1.16
 
