@@ -19,14 +19,11 @@ var Version = "dev"
 
 func main() {
 	log.SetFlags(log.Ltime | log.Lshortfile)
+	log.Println("VERSION:", Version)
 
 	var root string
 
 	flag.StringVar(&root, "root", os.Getenv("CODEPATH"), "The $GOPATH-style root directory.")
-	flag.Usage = func() {
-		flag.PrintDefaults()
-		_, _ = fmt.Fprintf(flag.CommandLine.Output(), "Version: %s", Version)
-	}
 	flag.Parse()
 
 	_, err := os.Stat(root)
