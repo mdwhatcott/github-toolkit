@@ -18,6 +18,8 @@ import (
 var Version = "dev"
 
 func main() {
+	log.SetFlags(log.Ltime | log.Lshortfile)
+
 	var root string
 
 	flag.StringVar(&root, "root", os.Getenv("CODEPATH"), "The $GOPATH-style root directory.")
