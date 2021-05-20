@@ -22,9 +22,11 @@ func main() {
 	log.Println("VERSION:", Version)
 
 	var root string
+	var user string
 	var dryRun bool
 
 	flag.StringVar(&root, "root", os.Getenv("CODEPATH"), "The $GOPATH-style root directory.")
+	flag.StringVar(&user, "user", os.Getenv("GITHUB_USER"), "The authenticated user--will ignore repos not on this user's account.")
 	flag.BoolVar(&dryRun, "dry-run", false, "When set, list repos to be cloned, but don't actually clone.")
 	flag.Parse()
 
@@ -58,7 +60,10 @@ func main() {
 		}
 
 		for _, repo := range list {
-			work <- repo.GetFullName()
+			name := repo.GetFullName()
+			if strings.HasPrefix(name, user+"/") {
+				work <- name
+			}
 		}
 
 		_ = response.Body.Close()
