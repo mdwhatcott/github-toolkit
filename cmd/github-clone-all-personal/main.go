@@ -22,8 +22,10 @@ func main() {
 	log.Println("VERSION:", Version)
 
 	var root string
+	var dryRun bool
 
 	flag.StringVar(&root, "root", os.Getenv("CODEPATH"), "The $GOPATH-style root directory.")
+	flag.BoolVar(&dryRun, "dry-run", false, "When set, list repos to be cloned, but don't actually clone.")
 	flag.Parse()
 
 	_, err := os.Stat(root)
@@ -43,7 +45,7 @@ func main() {
 	wait := new(sync.WaitGroup)
 	for x := 0; x < 10; x++ {
 		wait.Add(1)
-		go worker(x, root, work, wait)
+		go worker(x, root, work, wait, dryRun)
 	}
 
 	for page := 1; page > 0; {
@@ -67,10 +69,13 @@ func main() {
 	wait.Wait()
 }
 
-func worker(id int, root string, input chan string, waiter *sync.WaitGroup) {
+func worker(id int, root string, input chan string, waiter *sync.WaitGroup, dryRun bool) {
 	defer waiter.Done()
 
 	log.Println("[INFO] starting worker:", id)
+	if dryRun {
+		log.Printf("[INFO] worker %d operating in dry-run mode.", id)
+	}
 
 	for name := range input {
 		nameParts := strings.Split(name, "/")
@@ -79,6 +84,9 @@ func worker(id int, root string, input chan string, waiter *sync.WaitGroup) {
 		_, err := os.Stat(target)
 		if os.IsNotExist(err) {
 			log.Printf("[INFO] worker %d: git clone %s %s", id, source, target)
+			if dryRun {
+				continue
+			}
 			command := exec.Command("git", "clone", source, target)
 			command.Stderr = command.Stdout
 			err := command.Run()
